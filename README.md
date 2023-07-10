@@ -2,21 +2,25 @@
 This is a data engineering project that uses Airflow to automate the extraction of bus arrival data from the MyTransport API.
 
 # Project Structure
+``` bash
 de_sg_transport
 ├── dags
 │   └── dag_bus_info.py
 └── src
     ├── __init__.py
     └── extraction.py
+```
 
 dags/*.py: This folder contains the definitions of the Airflow DAG that orchestrates the ETL process.
+
 src/*.py: This folder contains the application code for the ETL process.
 
 # Requirements
-Python 3.8 or newer
-Docker and Docker Compose
-An account key and authorization token from LTA MyTransport API
-Create a new file .env in the project directory and define the following environment variables:
+- Python 3.8 or newer
+- Docker and Docker Compose
+- An account key and authorization token from LTA MyTransport API
+- Create a new file .env in the project directory and define the following environment variables:
+
 `ACCOUNT_KEY=YourMyTransportAPIAccountKey`
 
 # Instructions
