@@ -1,6 +1,7 @@
 from datetime import timedelta, datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
+from airflow.operators.dummy_operator import DummyOperator
 from src.extract import call_lta_api
 
 # Specify the default arguments for the DAG
@@ -30,6 +31,10 @@ call_api = PythonOperator(
     dag=dag,
 )
 
+dummy = DummyOperator(
+    task_id='dummy_task',
+    dag=dag)
+
 
 if __name__ == "__main__":
-    call_api
+    call_api >> dummy
