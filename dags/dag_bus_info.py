@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.dummy_operator import DummyOperator
-from src.extract import call_lta_api
+from src.extract import call_lta_bus_api
 
 # Specify the default arguments for the DAG
 default_args = {
@@ -26,8 +26,8 @@ dag = DAG(
 
 # Define the PythonOperator
 call_api = PythonOperator(
-    task_id='call_api',
-    python_callable=call_lta_api,
+    task_id='call_lta_bus_api',
+    python_callable=call_lta_bus_api,
     dag=dag,
 )
 
