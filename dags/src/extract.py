@@ -4,14 +4,20 @@ import json
 from datetime import datetime
 
 
-def call_lta_api():
-    url = "http://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2?BusStopCode=83139"
+def call_lta_bus_api():
+    """
+    Function that calls LTA bus api 
+    """
+    BUS_STOP_NO = 81111
+    LTA_API_KEY = os.environ.get('LTA_API_KEY')
+
+    url = f"http://datamall2.mytransport.sg/ltaodataservice/BusArrivalv2?BusStopCode={BUS_STOP_NO}"
 
     payload = {}
     headers = {
     'x-api-version': 'v1',
     'Accept': 'application/json',
-    'AccountKey': 'KsYG2mxiTHO8UO5k5Xh2uQ==', #To refactor secrets
+    'AccountKey': LTA_API_KEY,
     }
     response = requests.request("GET", url, headers=headers, data=payload)
     if response.status_code == 200:
@@ -37,4 +43,3 @@ def call_lta_api():
         return data
     else:
         raise Exception(f"API request failed with status {response.status_code}")
-
