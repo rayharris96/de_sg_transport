@@ -20,6 +20,7 @@ src/*.py: This folder contains the application code for the ETL process.
 - Docker and Docker Compose
 - An account key and authorization token from LTA MyTransport API
 - Include your LTA API key in .env under "LTA_API_KEY"
+- AWS ACCESS and SECRET KEY in .env (Never commit this)
 - Create a new file .env in the project directory and define the following environment variables:
 
 `ACCOUNT_KEY=YourMyTransportAPIAccountKey`
