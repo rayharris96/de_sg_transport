@@ -1,13 +1,24 @@
 import os
 import boto3
 import logging
+import git
+
+
+def get_git_root(path):
+
+    git_repo = git.Repo(path, search_parent_directories=True)
+    git_root = git_repo.git.rev_parse("--show-toplevel")
+    return git_root
+
 
 def load_env():
     """Load variables from .env file into environment variables.
 
     :param filepath: path to the .env file
     """
-    env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../.env')
+    git_root = get_git_root(os.getcwd())
+
+    env_path = os.path.join(git_root, '.env')
     with open(env_path, 'r') as f:
         for line in f:
             if line.startswith('#') or not line.strip():
