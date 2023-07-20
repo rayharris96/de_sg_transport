@@ -3,6 +3,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.dummy_operator import DummyOperator
 from src.extract import call_lta_bus_api
+from src.transform import transform_lta_bus
 
 # Specify the default arguments for the DAG
 default_args = {
@@ -25,16 +26,16 @@ dag = DAG(
 )
 
 # Define the PythonOperator
-call_api = PythonOperator(
+extract_bus_api = PythonOperator(
     task_id='call_lta_bus_api',
     python_callable=call_lta_bus_api,
     dag=dag,
 )
 
-dummy = DummyOperator(
-    task_id='dummy_task',
-    dag=dag)
+transform_bus_api = PythonOperator(
+    task_id='transform_bus_data',
+    python_callable=transform_lta_bus,
+    dag=dag,
+)
 
-
-if __name__ == "__main__":
-    call_api >> dummy
+extract_bus_api >> transform_bus_api

@@ -77,7 +77,7 @@ def download_latest_file_from_s3(bucket_name, prefix):
         print(e)
         return False
 
-    return True
+    return file_path
 
 def download_all_files_from_s3(bucket_name, prefix):
     """Download all files from an S3 bucket"""
@@ -111,4 +111,4 @@ def download_all_files_from_s3(bucket_name, prefix):
         print(e)
         return False
 
-    return True
+    return file_path
