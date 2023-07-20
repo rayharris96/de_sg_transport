@@ -1,6 +1,10 @@
 import os
 import boto3
 import logging
+import pandas as pd
+import io
+
+
 
 def load_env():
     """Load variables from .env file into environment variables.
@@ -113,3 +117,23 @@ def download_all_files_from_s3(bucket_name, prefix):
         return False
 
     return file_path
+
+
+def read_csvfile_from_s3(bucket_name, object_key):
+    s3_client = create_s3_client()
+
+    try:
+        # Get the object from S3
+        response = s3_client.get_object(Bucket=bucket_name, Key=object_key)
+
+        # Read the file data
+        file_data = response['Body'].read().decode('utf-8')
+
+        # Parse the CSV data into a pandas DataFrame
+        df = pd.read_csv(io.StringIO(file_data), header = 1)
+
+        return df
+
+    except Exception as e:
+        print("Error reading the CSV file from S3:", str(e))
+        return None

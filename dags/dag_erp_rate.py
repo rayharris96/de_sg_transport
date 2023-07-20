@@ -3,6 +3,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.operators.dummy_operator import DummyOperator
 from src.extract import call_erp_api
+from src.transform import transform_lta_erp_rate
 
 # Specify the default arguments for the DAG
 default_args = {
@@ -31,11 +32,13 @@ call_api = PythonOperator(
     dag=dag,
 )
 
-dummy = DummyOperator(
-    task_id='dummy_task',
-    dag=dag)
+
+transform_erp_api = PythonOperator(
+    task_id='transform_erp_data',
+    python_callable=transform_lta_erp_rate,
+    dag=dag,
+)
 
 
-if __name__ == "__main__":
-    call_api >> dummy
+call_api >> transform_erp_api
 
