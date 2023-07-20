@@ -43,19 +43,38 @@ def upload_file_to_s3(bucket_name, prefix, file_path):
         return False
     return True
 
-def download_file_from_s3(bucket_name, prefix, object_name, file_path=None):
-    """Download a file from an S3 bucket"""
-
-    if file_path is None:
-        # If no file path is given, use the object name as the file name
-        file_path = object_name
-
-    object_name = os.path.join(prefix, object_name)
+def download_latest_file_from_s3(bucket_name, prefix):
+    """Download the latest file from an S3 bucket"""
 
     s3_client = create_s3_client()
+
+    #Create default download data folder
+    data_dir = 'download_data'
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+    
     try:
-        s3_client.download_file(bucket_name, object_name, file_path)
+        # List all objects within the specified bucket and prefix
+        files = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+
+        # Check if there are any files
+        if files['KeyCount'] > 0:
+            # Sort the files by last modified date/time
+            sorted_files = sorted(files['Contents'], key=lambda x: x['LastModified'], reverse=True)
+            
+            # Get the name of the most recently modified file
+            latest_file = sorted_files[0]['Key']
+            
+            # If no file path is given, save the file in the 'download_data' folder with its original name
+            file_path = os.path.join(data_dir, os.path.basename(latest_file))
+
+            # Download the most recently modified file
+            s3_client.download_file(bucket_name, latest_file, file_path)
+        else:
+            print('No files found in the specified bucket and prefix.')
+            return False
     except Exception as e:
         print(e)
         return False
+
     return True
