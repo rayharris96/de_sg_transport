@@ -2,3 +2,4 @@ logs/*
 **/__pycache__
 data/*
 **/.env
+download_data/**
