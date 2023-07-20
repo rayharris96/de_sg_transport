@@ -2,7 +2,7 @@ import requests
 import os
 import json
 from datetime import datetime
-from utils import load_env, upload_file_to_s3, download_file_from_s3
+from .utils import load_env, upload_file_to_s3, download_file_from_s3
 
 
 def call_lta_bus_api():
