@@ -3,3 +3,4 @@ logs/*
 data/*
 **/.env
 download_data/**
+transformed_data/**
