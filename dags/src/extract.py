@@ -2,7 +2,7 @@ import requests
 import os
 import json
 from datetime import datetime
-from utils import load_env, upload_file_to_s3, download_file_from_s3
+from utils import load_env, upload_file_to_s3, download_file_from_s3,get_git_root
 
 
 def call_lta_bus_api():
@@ -30,7 +30,10 @@ def call_lta_bus_api():
         # ...
 
         # Define the directory for storing data
-        data_dir = './data'
+
+        git_root_path = get_git_root(os.getcwd())
+        data_dir = os.path.join(git_root_path,'data')
+
         if not os.path.exists(data_dir):
             os.makedirs(data_dir)
 
