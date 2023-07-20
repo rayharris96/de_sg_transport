@@ -78,3 +78,37 @@ def download_latest_file_from_s3(bucket_name, prefix):
         return False
 
     return True
+
+def download_all_files_from_s3(bucket_name, prefix):
+    """Download all files from an S3 bucket"""
+
+    s3_client = create_s3_client()
+
+    #Create default download data folder
+    data_dir = 'download_data'
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+    
+    try:
+        # List all objects within the specified bucket and prefix
+        files = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix)
+
+        # Check if there are any files
+        if files['KeyCount'] > 0:
+            # Download each file
+            for file in files['Contents']:
+                file_name = file['Key']
+
+                # If no file path is given, save the file in the 'download_data' folder with its original name
+                file_path = os.path.join('download_data', os.path.basename(file_name))
+
+                # Download the file
+                s3_client.download_file(bucket_name, file_name, file_path)
+        else:
+            print('No files found in the specified bucket and prefix.')
+            return False
+    except Exception as e:
+        print(e)
+        return False
+
+    return True

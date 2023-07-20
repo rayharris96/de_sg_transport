@@ -1,4 +1,4 @@
-from utils import load_env, download_latest_file_from_s3, upload_file_to_s3
+from .utils import load_env, download_latest_file_from_s3, upload_file_to_s3
 import os
 
 def transform_lta_bus():
