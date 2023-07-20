@@ -70,6 +70,7 @@ def download_latest_file_from_s3(bucket_name, prefix):
 
             # Download the most recently modified file
             s3_client.download_file(bucket_name, latest_file, file_path)
+            logging.info(f"File {latest_file} downloaded to {file_path}")
         else:
             print('No files found in the specified bucket and prefix.')
             return False
