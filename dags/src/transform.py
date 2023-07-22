@@ -26,7 +26,7 @@ def transform_lta_bus():
     filename = os.path.basename(file_path)
     filename = filename.rsplit('.', 1)[0]
     # Extract the date and time string from the filename
-    datetime_str = filename.split('_')[1] + '_' + filename.split('_')[2]
+    datetime_str = filename.split('_')[-2] + '_' + filename.split('_')[-1]
     # Convert the string to a datetime object
     extraction_time = datetime.strptime(datetime_str, '%Y%m%d_%H%M%S').replace(tzinfo=timezone.utc)
 
@@ -34,12 +34,11 @@ def transform_lta_bus():
     df['execution_time'] = extraction_time.replace(tzinfo=timezone(timedelta(hours=8)))
 
     temp_data_file_path = os.path.join('transformed_data',f'transformed_{datetime_str}.csv')
+    df.to_csv(temp_data_file_path, index=False)
     upload_file_to_s3(TRANSFORM_BUCKET, PREFIX, temp_data_file_path)
     print(f"File uploaded to S3 {TRANSFORM_BUCKET}/{PREFIX}/{filename}")
     os.remove(temp_data_file_path)
     print(f"{temp_data_file_path} removed from local")
-
-    df.to_csv(temp_data_file_path, index=False)
 
 
 def transform_lta_erp_rate():

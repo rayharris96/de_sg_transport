@@ -4,6 +4,7 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.dummy_operator import DummyOperator
 from src.extract import call_lta_bus_api
 from src.transform import transform_lta_bus
+from src.load_combine import combine_bus_timing
 
 # Specify the default arguments for the DAG
 default_args = {
@@ -32,10 +33,16 @@ extract_bus_api = PythonOperator(
     dag=dag,
 )
 
-transform_bus_api = PythonOperator(
+transform_bus_data = PythonOperator(
     task_id='transform_bus_data',
     python_callable=transform_lta_bus,
     dag=dag,
 )
 
-extract_bus_api >> transform_bus_api
+combine_bus_data = PythonOperator(
+    task_id='combine_bus_data',
+    python_callable=combine_bus_timing,
+    dag=dag,
+)
+
+extract_bus_api >> transform_bus_data >> combine_bus_data
