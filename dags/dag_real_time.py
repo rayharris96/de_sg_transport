@@ -45,4 +45,21 @@ combine_bus_data = PythonOperator(
     dag=dag,
 )
 
-extract_bus_api >> transform_bus_data >> combine_bus_data
+start = DummyOperator(
+    task_id='start_bus_timing_job',
+    dag=dag,
+)
+
+end = DummyOperator(
+    task_id='finish_bus_timing_job',
+    dag=dag,
+)
+
+email = DummyOperator(
+        task_id='send_email_alert',
+        dag=dag,
+)
+
+start >> extract_bus_api >> transform_bus_data
+transform_bus_data>> combine_bus_data >> end
+transform_bus_data >> email
