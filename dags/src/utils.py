@@ -84,13 +84,13 @@ def download_latest_file_from_s3(bucket_name, prefix):
 
     return file_path
 
-def download_all_files_from_s3(bucket_name, prefix):
+def download_all_files_from_s3(bucket_name, prefix, folder_prefix=None):
     """Download all files from an S3 bucket"""
 
     s3_client = create_s3_client()
 
     #Create default download data folder
-    data_dir = 'download_data'
+    data_dir = os.path.join('download_all_data', folder_prefix)
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)
     
@@ -105,10 +105,10 @@ def download_all_files_from_s3(bucket_name, prefix):
                 file_name = file['Key']
 
                 # If no file path is given, save the file in the 'download_data' folder with its original name
-                file_path = os.path.join('download_data', os.path.basename(file_name))
-
-                # Download the file
-                s3_client.download_file(bucket_name, file_name, file_path)
+                if file_name.endswith('.csv'):
+                    file_path = os.path.join(data_dir, os.path.basename(file_name))
+                    # Download the file
+                    s3_client.download_file(bucket_name, file_name, file_path)
         else:
             print('No files found in the specified bucket and prefix.')
             return False
@@ -116,7 +116,7 @@ def download_all_files_from_s3(bucket_name, prefix):
         print(e)
         return False
 
-    return file_path
+    return os.path.dirname(file_path)
 
 
 def read_csvfile_from_s3(bucket_name, object_key):

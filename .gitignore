@@ -4,3 +4,4 @@ data/*
 **/.env
 download_data/**
 transformed_data/**
+download_all_data/**
