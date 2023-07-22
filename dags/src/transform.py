@@ -2,10 +2,12 @@ from .utils import load_env, download_latest_file_from_s3, upload_file_to_s3,rea
 import pandas as pd
 import json
 import os
+from datetime import datetime, timedelta, timezone
 
 def transform_lta_bus():
     RAW_BUCKET = 'raw-kungfu-challenge'
     PREFIX = 'bus_stop'
+    TRANSFORM_BUCKET = 'staging-kungfu-challenge'
 
     #Download raw bus data from S3
     file_path = download_latest_file_from_s3(RAW_BUCKET, PREFIX)
@@ -13,8 +15,31 @@ def transform_lta_bus():
     f = open(file_path)
     data = json.load(f)
     df = pd.json_normalize(data['Services'])
-    # df = df[['ServiceNo', 'Operator', 'EstimatedArrival', 'Load', 'Feature']]
-    df.to_csv(os.path.join('transformed_data','transformed.csv'))
+    df = df[['ServiceNo', 'NextBus.EstimatedArrival', 'NextBus.Latitude', 'NextBus.Longitude']]
+    df = df.rename(columns={
+        'ServiceNo': "bus_no",
+        'NextBus.EstimatedArrival': 'arrival_time',
+        'NextBus.Latitude': 'latitude',
+        'NextBus.Longitude': 'longitude',
+    })
+
+    filename = os.path.basename(file_path)
+    filename = filename.rsplit('.', 1)[0]
+    # Extract the date and time string from the filename
+    datetime_str = filename.split('_')[1] + '_' + filename.split('_')[2]
+    # Convert the string to a datetime object
+    extraction_time = datetime.strptime(datetime_str, '%Y%m%d_%H%M%S').replace(tzinfo=timezone.utc)
+
+    df['arrival_mins'] = df['arrival_time'].apply(lambda x: abs(round((datetime.strptime(x, '%Y-%m-%dT%H:%M:%S%z') - extraction_time).total_seconds()/60,2)))
+    df['execution_time'] = extraction_time.replace(tzinfo=timezone(timedelta(hours=8)))
+
+    temp_data_file_path = os.path.join('transformed_data',f'transformed_{datetime_str}.csv')
+    upload_file_to_s3(TRANSFORM_BUCKET, PREFIX, temp_data_file_path)
+    print(f"File uploaded to S3 {TRANSFORM_BUCKET}/{PREFIX}/{filename}")
+    os.remove(temp_data_file_path)
+    print(f"{temp_data_file_path} removed from local")
+
+    df.to_csv(temp_data_file_path, index=False)
 
 
 def transform_lta_erp_rate():
@@ -51,4 +76,3 @@ def transform_lta_erp_rate():
 
 #Main
 load_env()
-

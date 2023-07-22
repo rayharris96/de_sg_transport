@@ -19,10 +19,10 @@ default_args = {
 
 # Define the DAG
 dag = DAG(
-    'lta_api_dag',
+    'transport_real_time',
     default_args=default_args,
-    description='A DAG for simple bus timing and info ETL',
-    schedule_interval=timedelta(days=1),
+    description='A DAG for simple bus and taxi timing and info ETL, in real-time mode',
+    schedule_interval=timedelta(seconds=30),
 )
 
 # Define the PythonOperator

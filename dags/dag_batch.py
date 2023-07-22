@@ -19,9 +19,9 @@ default_args = {
 
 # Define the DAG
 dag = DAG(
-    'lta_api_erp_dag',
+    'transport_batch',
     default_args=default_args,
-    description='A DAG for erp rate and info ETL',
+    description='A DAG for erp rate and info ETL, in batch mode',
     schedule_interval=timedelta(days=1),
 )
 
