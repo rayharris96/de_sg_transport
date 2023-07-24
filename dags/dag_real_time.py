@@ -23,7 +23,7 @@ dag = DAG(
     'transport_real_time',
     default_args=default_args,
     description='A DAG for simple bus and taxi timing and info ETL, in real-time mode',
-    schedule_interval=timedelta(seconds=10),
+    schedule_interval=timedelta(seconds=30),
 )
 
 # Define the PythonOperator
