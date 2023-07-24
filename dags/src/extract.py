@@ -52,7 +52,8 @@ def call_lta_bus_api():
     print(f"{file_path} uploaded to {RAW_BUCKET}/{PREFIX}")
     
     #Delete data after upload
-    os.remove(file_path)
+    if os.path.exists(file_path):
+        os.remove(file_path)
     print(f"{file_path} removed from local")
 
 
@@ -102,7 +103,8 @@ def call_erp_api():
     print(f"{file_path} uploaded to {RAW_BUCKET}/{PREFIX_ERP}")
 
     # Delete data after upload
-    os.remove(file_path)
+    if os.path.exists(file_path):
+        os.remove(file_path)
     print(f"{file_path} removed from local")
 
 

@@ -37,7 +37,8 @@ def transform_lta_bus():
     df.to_csv(temp_data_file_path, index=False)
     upload_file_to_s3(TRANSFORM_BUCKET, PREFIX, temp_data_file_path)
     print(f"File uploaded to S3 {TRANSFORM_BUCKET}/{PREFIX}/{filename}")
-    os.remove(temp_data_file_path)
+    if os.path.exists(temp_data_file_path):
+        os.remove(temp_data_file_path)
     print(f"{temp_data_file_path} removed from local")
 
 
@@ -70,7 +71,8 @@ def transform_lta_erp_rate():
 
     upload_file_to_s3(PRESENTATION_BUCKET, PREFIX_ERP, temp_data_file_path)
 
-    os.remove(temp_data_file_path)
+    if os.path.exists(temp_data_file_path):
+        os.remove(temp_data_file_path)
     print(f"{temp_data_file_path} removed from local")
 
 #Main
